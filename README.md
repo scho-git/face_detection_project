@@ -1,5 +1,24 @@
 # FACIAL KEYPOINT DETECTION
 
+This notebook is broken down in the following order:
+* [1. Introduction](#1)
+* [2. Methodology](#2)
+  * [2.1 Data Acquisition](#2.1)
+  * [2.2 Data Structure Overview](#2.2)
+  * [2.3 Modeling Approach](#2.3)
+* [3. Data Exploration](#3)
+* [4. Model Performance Selection](#4)
+* [5. Model Selection and Training](#5)
+  * [5.1 Benchmark Model](#5.1)
+  * [5.2 Custom Architecture](#5.2)
+  * [5.3 MobileNetV2](#5.3)
+  * [5.4 DenseNet169](#5.4)
+  * [5.5 XCeption](#5.5)
+* [6. Modeling Results](#6)
+* [7. Explainability](#7)
+* [8. Conclusions](#8)
+* [9. Future Improvements](#9)
+
 ## 1. INTRODUCTION <a name='1'></a>
 Computer vision is an ever growing market, expected to reach $48.6 billion by 2022. Especially in a world with an increasing supply of visual information from security systems, phones, and entertainment footage, computer vision is an area of opportunity for a range of activities. 
 
@@ -38,37 +57,37 @@ After training and evaluating the models, I plan to dive deeper into their expla
 Because this is an unsupervised problem, I will be using Kaggle notebooks for their GPU use. The limitation is that Kaggle notebook memories are capped at 16 RAM. I suspect this might be an issue depending on the number of images I will use.
 
 ## 3. DATA EXPLORATION <a name='3'></a>
-I visualized the distribution of the coordinates to get an idea of what they look like. It will also be good to note if the model predictions fall outside these ranges. 
+The distribution of the coordinates was visualized to get an idea of what they look like. It will also be good to note if the model predictions fall outside these ranges. 
 
-I also plotted a general heatmap of the location of the coordinates for a better overall view.
+A general heatmap of the location of the coordinates was also plotted for a better overall view.
 
-The coordinates’ correlation map was also plotted. I was surprised to see that some coordinates weren’t as correlated as I thought they would be.
+The coordinates’ correlation map was also plotted. It was surprising to see that some coordinates weren’t as correlated as I thought they would be.
 
 
 ## 4. PERFORMANCE METRIC SELECTION <a name='4'></a>
-Since this is a regression problem, I will be using the MSE as the model metric to serve as scoring in the training section. The main reason for MSE is the distribution of the coordinates; they are relatively normal and I don’t expect any outliers that would skew the metric. 
+Since this is a regression problem, MSE will be used as the model metric to serve as scoring in the training section. The main reason for MSE is the distribution of the coordinates; they are relatively normal and I don’t expect any outliers that would skew the metric. 
 
 MSE =1ni=1n(yi-yi)2
 
-I will be evaluating the MSE for each of the ten coordinates in the test data as well as obtaining an average of all of them. 
+The MSE will be evaluated for each of the ten coordinates in the test data as well as obtaining an average of all of them. 
 
-For model comparison, a different metric will be used because the image sizes and keypoints are on different scales and MSE is scale-dependent. As such, I will be calculating a percentage error for each coordinate, dividing the RMSE’s by the average and multiplying by 100.
+For model comparison, a different metric will be used since the image sizes and keypoints are on different scales and MSE is scale-dependent. As such, a percentage error for each coordinate will be calculated, dividing the RMSE’s by the average and multiplying by 100.
 
 ## 5. MODEL SELECTION AND TRAINING <a name='5'></a>
-I chose to train with four CNN models: one with a custom architecture formed through looking at Kaggle discussion forums, and three pre-trained models for transfer learning.
+Training will be done with four CNN models: one with a custom architecture formed through looking at Kaggle discussion forums, and three pre-trained models used with transfer learning.
 
 ### 5.1 Benchmark model <a name='5.1'></a>
 A benchmark model will be created that consistently predicts only the average of each coordinate consistently. The evaluation metrics for this model will be used in comparison to the other models’. For a direct comparison, the image size and amount used for this benchmark model will be the same as the custom architecture model.
 
 ### 5.2 Custom architecture <a name='5.2'></a>
-I will be obtaining one from looking at the Kaggle forums. In order to use a good sized image set (35,000), I will be resizing the images down to 65 x 80 and the keypoint coordinately respectively. 
+I will be obtaining one from looking at the Kaggle forums. In order to use a good sized image set (35,000), the images will be resized down to 65 x 80 and the keypoint coordinately respectively. 
 
 The architecture here will consist of a few convolutional blocks, followed by dense layers.
 
 ### 5.3 MobileNetV2 <a name='5.3'></a>
 MobileNetV2 is also another lightweight model (14 MB) since it’s optimized to perform on mobile devices. One of the reasons for its performance efficiency is its inverted residual structure where the residuals connections are between the bottleneck layers. Its architecture consists of the convolution layer with 32 filters, followed by 19 residual bottleneck layers.
 
-For the transfer learning portion, I will use the imagenet weights with a simple architecture added at the end of the MobileNetV2 to result in the final 10 nodes. Because MobileNetV2 was originally trained with images sized 224 x 224, I will also be rescaling my keypoints and images to that size. Due to limited memory, I will also need to decrease the amount of images used to XYZ.
+For the transfer learning portion, imagenet weights will be used with a simple architecture added at the end of the MobileNetV2 to result in the final 10 nodes. Because MobileNetV2 was originally trained with images sized 224 x 224, the keypoints and images will also be rescaled to that size. Due to limited memory in Kaggle notebooks, the amount of images used will also be decreased.
 
 ### 5.4 DenseNet169 <a name='5.4'></a>
 DenseNet is another lightweight architecture model (57 MB). Its dense architecture stems from shorter connections between layers close to the input and those close to the output. Each layer obtains additional inputs from all preceding layers, passing its own feature-maps to all subsequent layers. This alleviates the vanishing-gradient problem, strengthens feature propagation, and reduces the number of parameters.
@@ -82,18 +101,13 @@ As with the other models, I will use the imagenet weights with the same simple a
 
 ## 6. MODELING RESULTS <a name='6'></a>
 
-Model
-Average MSE
-Benchmark
-1.694218
-Custom
-0.994353
-Xception
-1055.3187
-MobileNetV2
-592.19005
-DenseNet169
-1316.3563
+| Model | Average MSE | 
+| ---- | ---- |
+|Benchmark | 1.694218 |
+|Custom | 0.994353 |
+|Xception | 1055.3187 |
+|MobileNetV2 | 592.19005 |
+|DenseNet169 | 1316.3563 |
 
 The custom model performed the best, out of all the models. I was surprised to see the pretrained models to do so horribly, but that might be because the smaller amount of images used. At the least, I’m relieved to see that the custom model still performed better than the benchmark.
 
