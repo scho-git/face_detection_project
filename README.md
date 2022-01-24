@@ -71,7 +71,7 @@ The coordinates’ correlation map was also plotted. It was surprising to see th
 ## 4. PERFORMANCE METRIC SELECTION <a name='4'></a>
 Since this is a regression problem, MSE will be used as the model metric to serve as scoring in the training section. The main reason for MSE is the distribution of the coordinates; they are relatively normal and I don’t expect any outliers that would skew the metric. 
 
-MSE =1ni=1n(yi-yi)2
+<img src="https://latex.codecogs.com/svg.image?MSE&space;=&space;\frac{1}{n}\sum_{i=1}^{n}(y_{i}-\hat{y_{i}})^2" title="MSE = \frac{1}{n}\sum_{i=1}^{n}(y_{i}-\hat{y_{i}})^2" />
 
 The MSE will be evaluated for each of the ten coordinates in the test data as well as obtaining an average of all of them. 
 
