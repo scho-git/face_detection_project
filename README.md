@@ -58,14 +58,16 @@ The data will then be fed through convolutional neural network (“CNN”) model
 
 After training and evaluating the models, I plan to dive deeper into their explainability with GradCAM. 
 
-Because this is an unsupervised problem, I will be using Kaggle notebooks for their GPU use. The limitation is that Kaggle notebook memories are capped at 16 RAM. I suspect this might be an issue depending on the number of images I will use.
+Kaggle notebooks will be used for its GPU use. The limitation is that Kaggle notebook memories are capped at 16 RAM; this might be an issue depending on the number of images I will use.
 
 ## 3. DATA EXPLORATION <a name='3'></a>
 The distribution of the coordinates was visualized to get an idea of what they look like. It will also be good to note if the model predictions fall outside these ranges. 
 
-A general heatmap of the location of the coordinates was also plotted for a better overall view.
+A general heatmap of the location of the coordinates was also plotted for a better overall view:
+![Heatmap Distribution](https://user-images.githubusercontent.com/59320489/151750083-0232f822-3f8d-4c72-9625-29fcc336f050.png)
 
 The coordinates’ correlation map was also plotted. It was surprising to see that some coordinates weren’t as correlated as I thought they would be.
+![Correlation Map](https://user-images.githubusercontent.com/59320489/151750140-14328061-d166-4086-b47c-92a17eed463c.png)
 
 
 ## 4. PERFORMANCE METRIC SELECTION <a name='4'></a>
